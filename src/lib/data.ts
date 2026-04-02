@@ -1,4 +1,4 @@
-export const WHATSAPP_NUMBER = "5519999999999" // Substitua pelo número real
+export const WHATSAPP_NUMBER = "551938674303"
 export const WHATSAPP_BASE = `https://wa.me/${WHATSAPP_NUMBER}`
 
 export const whatsappLink = (message: string) =>

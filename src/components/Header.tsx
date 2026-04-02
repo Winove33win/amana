@@ -4,8 +4,12 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { COMPANY, whatsappLink } from "@/lib/data";
+
+// Cor de fundo do header — igual ao fundo da logo
+const HEADER_BG = "#FFFFFF";
+const HEADER_BORDER = "rgba(201,169,110,0.25)";
 
 const NAV_LINKS = [
   { href: "/", label: "Início" },
@@ -14,40 +18,31 @@ const NAV_LINKS = [
 ];
 
 export default function Header() {
-  const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    const onResize = () => setIsMobile(window.innerWidth < 768);
-    onResize();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
-    };
+    const check = () => setIsMobile(window.innerWidth < 820);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
   }, []);
-
-  const textColor = scrolled ? "#1C1C1C" : "#FFFFFF";
 
   return (
     <>
-      <motion.header
-        initial={{ y: -80, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      {/* Fixed Header — always visible, no scroll tricks */}
+      <header
         style={{
           position: "fixed",
           top: 0,
           left: 0,
           right: 0,
           zIndex: 100,
-          background: scrolled ? "rgba(255,255,255,0.97)" : "transparent",
-          boxShadow: scrolled ? "0 1px 0 rgba(201,169,110,0.2)" : "none",
-          backdropFilter: scrolled ? "blur(8px)" : "none",
-          transition: "background 0.4s ease, box-shadow 0.4s ease",
+          background: HEADER_BG,
+          borderBottom: `1px solid ${HEADER_BORDER}`,
+          height: "72px",
+          display: "flex",
+          alignItems: "center",
         }}
       >
         <div
@@ -55,64 +50,47 @@ export default function Header() {
             maxWidth: "1280px",
             margin: "0 auto",
             padding: "0 2rem",
+            width: "100%",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            height: scrolled ? "68px" : "84px",
-            transition: "height 0.4s ease",
           }}
         >
           {/* Logo */}
           <Link
             href="/"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              flexShrink: 0,
-              lineHeight: 0,
-            }}
+            style={{ display: "flex", alignItems: "center", flexShrink: 0, lineHeight: 0 }}
           >
             <Image
               src="/images/logo.png"
               alt={COMPANY.name}
-              width={120}
-              height={48}
-              style={{
-                width: "auto",
-                height: "44px",
-                objectFit: "contain",
-                display: "block",
-              }}
+              width={130}
+              height={52}
+              style={{ width: "auto", height: "40px", objectFit: "contain", display: "block" }}
               priority
             />
           </Link>
 
           {/* Desktop Nav */}
           {!isMobile && (
-            <nav
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "2.5rem",
-              }}
-            >
+            <nav style={{ display: "flex", alignItems: "center", gap: "2.5rem" }}>
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
+                  className="nav-link"
                   style={{
                     fontFamily: "Inter, sans-serif",
-                    fontSize: "0.78rem",
+                    fontSize: "0.75rem",
                     fontWeight: 500,
-                    letterSpacing: "0.12em",
+                    letterSpacing: "0.14em",
                     textTransform: "uppercase",
-                    color: textColor,
+                    color: "#1C1C1C",
                     textDecoration: "none",
                     position: "relative",
                     paddingBottom: "4px",
                     whiteSpace: "nowrap",
                   }}
-                  className="nav-link"
                 >
                   {link.label}
                 </Link>
@@ -131,9 +109,18 @@ export default function Header() {
                   textTransform: "uppercase",
                   padding: "10px 22px",
                   textDecoration: "none",
-                  border: "1px solid var(--gold)",
                   whiteSpace: "nowrap",
-                  transition: "all 0.3s ease",
+                  display: "inline-block",
+                  border: "1px solid var(--gold)",
+                  transition: "background 0.25s, color 0.25s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "transparent";
+                  e.currentTarget.style.color = "var(--gold)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "var(--gold)";
+                  e.currentTarget.style.color = "#FFFFFF";
                 }}
               >
                 Fale Conosco
@@ -141,39 +128,38 @@ export default function Header() {
             </nav>
           )}
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Hamburger */}
           {isMobile && (
             <button
-              onClick={() => setMenuOpen(!menuOpen)}
+              onClick={() => setMenuOpen(true)}
               style={{
                 background: "none",
                 border: "none",
                 cursor: "pointer",
-                color: textColor,
+                color: "#1C1C1C",
                 padding: "8px",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
               }}
             >
-              {menuOpen ? <X size={24} /> : <Menu size={24} />}
+              <Menu size={24} />
             </button>
           )}
         </div>
-      </motion.header>
+      </header>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile fullscreen menu */}
       <AnimatePresence>
-        {menuOpen && isMobile && (
+        {menuOpen && (
           <motion.div
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             style={{
               position: "fixed",
               inset: 0,
-              zIndex: 99,
+              zIndex: 200,
               background: "#FFFFFF",
               display: "flex",
               flexDirection: "column",
@@ -186,38 +172,39 @@ export default function Header() {
               onClick={() => setMenuOpen(false)}
               style={{
                 position: "absolute",
-                top: "1.5rem",
-                right: "2rem",
+                top: "1.25rem",
+                right: "1.5rem",
                 background: "none",
                 border: "none",
                 cursor: "pointer",
                 color: "#1C1C1C",
+                padding: "8px",
               }}
             >
-              <X size={28} />
+              <X size={26} />
             </button>
 
             <Image
               src="/images/logo.png"
               alt={COMPANY.name}
-              width={140}
-              height={56}
-              style={{ width: "auto", height: "52px", objectFit: "contain" }}
+              width={130}
+              height={52}
+              style={{ width: "auto", height: "46px", objectFit: "contain", marginBottom: "0.5rem" }}
             />
 
             {NAV_LINKS.map((link, i) => (
               <motion.div
                 key={link.href}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 + i * 0.07 }}
+                transition={{ delay: 0.08 + i * 0.07 }}
               >
                 <Link
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
                   style={{
                     fontFamily: "Playfair Display, serif",
-                    fontSize: "2rem",
+                    fontSize: "1.9rem",
                     fontWeight: 400,
                     color: "#1C1C1C",
                     textDecoration: "none",
@@ -229,15 +216,15 @@ export default function Header() {
             ))}
 
             <motion.a
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
+              transition={{ delay: 0.35 }}
               href={whatsappLink("Olá! Gostaria de saber mais sobre os móveis da Amana Interiores.")}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setMenuOpen(false)}
               style={{
-                marginTop: "1rem",
+                marginTop: "0.5rem",
                 background: "var(--gold)",
                 color: "#FFFFFF",
                 fontFamily: "Inter, sans-serif",
@@ -259,16 +246,13 @@ export default function Header() {
         .nav-link::after {
           content: '';
           position: absolute;
-          bottom: 0;
-          left: 0;
-          width: 0;
-          height: 1px;
+          bottom: 0; left: 0;
+          width: 0; height: 1px;
           background: var(--gold);
           transition: width 0.3s ease;
         }
-        .nav-link:hover::after {
-          width: 100%;
-        }
+        .nav-link:hover::after { width: 100%; }
+        .nav-link:hover { color: var(--gold) !important; }
       `}</style>
     </>
   );
