@@ -193,13 +193,8 @@ export default function Home() {
       {/* PILLARS */}
       <section style={{ background: "#FFFFFF", padding: "5rem 2rem" }}>
         <div
-          style={{
-            maxWidth: "1280px",
-            margin: "0 auto",
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-            gap: "3rem",
-          }}
+          className="pillars-grid"
+          style={{ maxWidth: "1280px", margin: "0 auto" }}
         >
           {[
             { icon: Clock, title: "30 Anos", desc: "De tradição e excelência em móveis de alto padrão" },
@@ -242,13 +237,8 @@ export default function Home() {
       {/* ABOUT */}
       <section style={{ background: "var(--off-white)" }}>
         <div
-          style={{
-            maxWidth: "1280px",
-            margin: "0 auto",
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-          }}
-          className="about-grid"
+          className="split-grid"
+          style={{ maxWidth: "1280px", margin: "0 auto" }}
         >
           <div className="img-zoom" style={{ position: "relative", minHeight: "420px" }}>
             <Image src="/images/mesa.jpg" alt="Nossa história" fill style={{ objectFit: "cover" }} />
@@ -258,8 +248,8 @@ export default function Home() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="split-grid-text"
             style={{ padding: "5rem 4rem", display: "flex", flexDirection: "column", justifyContent: "center" }}
-            className="about-text"
           >
             <div style={{ width: "40px", height: "2px", background: "var(--gold)", marginBottom: "2rem" }} />
             <p style={{ fontFamily: "Inter, sans-serif", fontSize: "0.75rem", fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--gold)", marginBottom: "1rem" }}>
@@ -293,12 +283,6 @@ export default function Home() {
             </Link>
           </motion.div>
         </div>
-        <style jsx global>{`
-          @media (max-width: 768px) {
-            .about-grid { grid-template-columns: 1fr !important; }
-            .about-text { padding: 3rem 2rem !important; }
-          }
-        `}</style>
       </section>
 
       {/* CATEGORIES */}
@@ -318,7 +302,7 @@ export default function Home() {
               Encontre a peça perfeita para cada ambiente
             </p>
           </motion.div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "1.5rem" }}>
+          <div className="categories-grid">
             {CATEGORIES.map((cat, i) => (
               <motion.div
                 key={cat.id}
@@ -366,7 +350,7 @@ export default function Home() {
               Ver todos os produtos <ArrowRight size={14} />
             </Link>
           </motion.div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "2.5rem" }}>
+          <div className="products-grid">
             {FEATURED_PRODUCTS.map((product, i) => (
               <ProductCard key={product.id} product={product} index={i} />
             ))}

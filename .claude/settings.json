@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(find \"c:\\\\Users\\\\Nrtfe\\\\Downloads\\\\Amana\" -maxdepth 1 -type f -exec ls -lh {} \\\\;)",
-      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-turbopack)"
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-turbopack)",
+      "Bash(npm list:*)",
+      "Bash(node deploy.mjs)"
     ],
     "additionalDirectories": [
       "C:\\Users\\Nrtfe\\amana",

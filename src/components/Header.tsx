@@ -16,12 +16,21 @@ const NAV_LINKS = [
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
+    const onResize = () => setIsMobile(window.innerWidth < 768);
+    onResize();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
+    };
   }, []);
+
+  const textColor = scrolled ? "#1C1C1C" : "#FFFFFF";
 
   return (
     <>
@@ -35,10 +44,10 @@ export default function Header() {
           left: 0,
           right: 0,
           zIndex: 100,
-          transition: "background 0.4s ease, box-shadow 0.4s ease",
           background: scrolled ? "rgba(255,255,255,0.97)" : "transparent",
           boxShadow: scrolled ? "0 1px 0 rgba(201,169,110,0.2)" : "none",
           backdropFilter: scrolled ? "blur(8px)" : "none",
+          transition: "background 0.4s ease, box-shadow 0.4s ease",
         }}
       >
         <div
@@ -49,95 +58,113 @@ export default function Header() {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            height: scrolled ? "72px" : "88px",
+            height: scrolled ? "68px" : "84px",
             transition: "height 0.4s ease",
           }}
         >
           {/* Logo */}
-          <Link href="/" style={{ display: "flex", alignItems: "center" }}>
+          <Link
+            href="/"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              flexShrink: 0,
+              lineHeight: 0,
+            }}
+          >
             <Image
               src="/images/logo.png"
               alt={COMPANY.name}
-              width={140}
-              height={56}
-              style={{ objectFit: "contain", height: "auto" }}
+              width={120}
+              height={48}
+              style={{
+                width: "auto",
+                height: "44px",
+                objectFit: "contain",
+                display: "block",
+              }}
               priority
             />
           </Link>
 
           {/* Desktop Nav */}
-          <nav style={{ display: "flex", alignItems: "center", gap: "2.5rem" }} className="hidden md:flex">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                style={{
-                  fontFamily: "Inter, sans-serif",
-                  fontSize: "0.8rem",
-                  fontWeight: 500,
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  color: scrolled ? "#1C1C1C" : "#FFFFFF",
-                  textDecoration: "none",
-                  position: "relative",
-                  paddingBottom: "4px",
-                }}
-                className="nav-link"
-              >
-                {link.label}
-              </Link>
-            ))}
-            <a
-              href={whatsappLink("Olá! Gostaria de saber mais sobre os móveis da Amana Interiores.")}
-              target="_blank"
-              rel="noopener noreferrer"
+          {!isMobile && (
+            <nav
               style={{
-                background: "var(--gold)",
-                color: "#FFFFFF",
-                fontFamily: "Inter, sans-serif",
-                fontSize: "0.75rem",
-                fontWeight: 600,
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                padding: "10px 24px",
-                textDecoration: "none",
-                border: "1px solid var(--gold)",
-                transition: "all 0.3s ease",
-              }}
-              onMouseEnter={(e) => {
-                (e.target as HTMLElement).style.background = "transparent";
-                (e.target as HTMLElement).style.color = "var(--gold)";
-              }}
-              onMouseLeave={(e) => {
-                (e.target as HTMLElement).style.background = "var(--gold)";
-                (e.target as HTMLElement).style.color = "#FFFFFF";
+                display: "flex",
+                alignItems: "center",
+                gap: "2.5rem",
               }}
             >
-              Fale Conosco
-            </a>
-          </nav>
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  style={{
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: "0.78rem",
+                    fontWeight: 500,
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                    color: textColor,
+                    textDecoration: "none",
+                    position: "relative",
+                    paddingBottom: "4px",
+                    whiteSpace: "nowrap",
+                  }}
+                  className="nav-link"
+                >
+                  {link.label}
+                </Link>
+              ))}
+              <a
+                href={whatsappLink("Olá! Gostaria de saber mais sobre os móveis da Amana Interiores.")}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  background: "var(--gold)",
+                  color: "#FFFFFF",
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: "0.72rem",
+                  fontWeight: 600,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  padding: "10px 22px",
+                  textDecoration: "none",
+                  border: "1px solid var(--gold)",
+                  whiteSpace: "nowrap",
+                  transition: "all 0.3s ease",
+                }}
+              >
+                Fale Conosco
+              </a>
+            </nav>
+          )}
 
           {/* Mobile Menu Button */}
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              color: scrolled ? "#1C1C1C" : "#FFFFFF",
-              padding: "8px",
-              display: "flex",
-            }}
-            className="flex md:hidden"
-          >
-            {menuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {isMobile && (
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                color: textColor,
+                padding: "8px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {menuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          )}
         </div>
       </motion.header>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Overlay */}
       <AnimatePresence>
-        {menuOpen && (
+        {menuOpen && isMobile && (
           <motion.div
             initial={{ opacity: 0, x: "100%" }}
             animate={{ opacity: 1, x: 0 }}
@@ -173,9 +200,9 @@ export default function Header() {
             <Image
               src="/images/logo.png"
               alt={COMPANY.name}
-              width={160}
-              height={64}
-              style={{ objectFit: "contain", marginBottom: "1rem" }}
+              width={140}
+              height={56}
+              style={{ width: "auto", height: "52px", objectFit: "contain" }}
             />
 
             {NAV_LINKS.map((link, i) => (

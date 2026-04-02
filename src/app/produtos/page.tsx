@@ -161,13 +161,7 @@ export default function ProdutosPage() {
           </p>
 
           {filtered.length > 0 ? (
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-                gap: "3rem 2.5rem",
-              }}
-            >
+            <div className="products-grid">
               {filtered.map((product, i) => (
                 <ProductCard key={product.id} product={product} index={i} />
               ))}

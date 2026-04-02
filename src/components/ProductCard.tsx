@@ -17,18 +17,25 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.6, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
+      style={{ height: "100%" }}
     >
       <Link
         href={`/produtos/${product.id}`}
-        style={{ textDecoration: "none", display: "block" }}
+        style={{ textDecoration: "none", display: "block", height: "100%" }}
       >
         <div
+          className="product-card"
           style={{
             background: "#FFFFFF",
+            border: "1px solid var(--border)",
+            overflow: "hidden",
             cursor: "pointer",
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+            transition: "box-shadow 0.3s ease, transform 0.3s ease",
           }}
-          className="product-card"
         >
           {/* Image */}
           <div
@@ -37,28 +44,37 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
               aspectRatio: "4/3",
               position: "relative",
               background: "var(--cream)",
+              flexShrink: 0,
+              overflow: "hidden",
             }}
           >
             <Image
               src={product.image}
               alt={product.name}
               fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               style={{ objectFit: "cover" }}
             />
           </div>
 
           {/* Info */}
-          <div style={{ padding: "1.5rem 0 0" }}>
+          <div
+            style={{
+              padding: "1.25rem 1.25rem 1.5rem",
+              display: "flex",
+              flexDirection: "column",
+              flex: 1,
+            }}
+          >
             <p
               style={{
                 fontFamily: "Inter, sans-serif",
-                fontSize: "0.7rem",
-                fontWeight: 500,
-                letterSpacing: "0.12em",
+                fontSize: "0.68rem",
+                fontWeight: 600,
+                letterSpacing: "0.14em",
                 textTransform: "uppercase",
                 color: "var(--gold)",
-                marginBottom: "0.5rem",
+                marginBottom: "0.4rem",
               }}
             >
               {product.category}
@@ -66,10 +82,10 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
             <h3
               style={{
                 fontFamily: "Playfair Display, serif",
-                fontSize: "1.2rem",
+                fontSize: "1.15rem",
                 fontWeight: 500,
                 color: "var(--dark)",
-                marginBottom: "0.75rem",
+                marginBottom: "0.6rem",
                 lineHeight: 1.3,
               }}
             >
@@ -78,44 +94,51 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
             <p
               style={{
                 fontFamily: "Inter, sans-serif",
-                fontSize: "0.85rem",
+                fontSize: "0.82rem",
                 color: "var(--medium)",
-                lineHeight: 1.6,
-                marginBottom: "1rem",
+                lineHeight: 1.65,
+                marginBottom: "1.25rem",
+                overflow: "hidden",
                 display: "-webkit-box",
                 WebkitLineClamp: 2,
                 WebkitBoxOrient: "vertical",
-                overflow: "hidden",
+                flex: 1,
               }}
             >
               {product.description}
             </p>
             <div
+              className="card-link"
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "0.5rem",
+                gap: "0.4rem",
                 color: "var(--dark)",
                 fontFamily: "Inter, sans-serif",
-                fontSize: "0.8rem",
-                fontWeight: 500,
-                letterSpacing: "0.05em",
+                fontSize: "0.78rem",
+                fontWeight: 600,
+                letterSpacing: "0.06em",
+                marginTop: "auto",
               }}
-              className="card-link"
             >
               Ver Detalhes
-              <ArrowRight size={14} />
+              <ArrowRight size={13} />
             </div>
           </div>
         </div>
       </Link>
+
       <style jsx global>{`
-        .product-card .card-link {
-          transition: gap 0.3s ease, color 0.3s ease;
+        .product-card:hover {
+          box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+          transform: translateY(-3px);
         }
         .product-card:hover .card-link {
-          gap: 0.75rem;
           color: var(--gold);
+          gap: 0.7rem;
+        }
+        .card-link {
+          transition: color 0.3s ease, gap 0.3s ease;
         }
       `}</style>
     </motion.div>
